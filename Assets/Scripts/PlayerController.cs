@@ -1,38 +1,45 @@
 using System;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+namespace Assets.Scripts
 {
-    public SnakeMovement SnakeController;
-    private float _lastScreenXTapPosition;
-    public float MovementSensetivityOffset = 0.1f;
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        _lastScreenXTapPosition = (SnakeController.RoadLeftLimit + SnakeController.RoadRightLimit) / 2;
-    }
+        public static PlayerController GetInstance => _instance;
+        private static PlayerController _instance;
+        void Awake() => _instance = this;
 
-    void Update()
-    {
-        if (!Input.GetMouseButton(0))
+        public SnakeController SnakeController;
+        private float _lastScreenXTapPosition;
+        public float MovementSensetivityOffset = 0.1f;
+        void Start()
         {
-            SnakeController.MovementDirection = SnakeDir.Center;
-            return;
+            _lastScreenXTapPosition = (SnakeController.RoadLeftLimit + SnakeController.RoadRightLimit) / 2;
         }
 
-        var screenPosNormalized = Input.mousePosition.x / Screen.width;
-        _lastScreenXTapPosition = Mathf.Lerp(SnakeController.RoadLeftLimit,
-            SnakeController.RoadRightLimit,
-            screenPosNormalized);
-
-        if (Math.Abs(_lastScreenXTapPosition - SnakeController.transform.position.x) >= MovementSensetivityOffset)
+        void Update()
         {
-            if(_lastScreenXTapPosition < SnakeController.transform.position.x)
-                SnakeController.MovementDirection = SnakeDir.Left;
+            if (!Input.GetMouseButton(0))
+            {
+                SnakeController.MovementDirection = SnakeDir.Center;
+                return;
+            }
 
-            if(_lastScreenXTapPosition > SnakeController.transform.position.x)
-                SnakeController.MovementDirection = SnakeDir.Right;
+            var screenPosNormalized = Input.mousePosition.x / Screen.width;
+            _lastScreenXTapPosition = Mathf.Lerp(SnakeController.RoadLeftLimit,
+                SnakeController.RoadRightLimit,
+                screenPosNormalized);
+
+            if (Math.Abs(_lastScreenXTapPosition - SnakeController.transform.position.x) >= MovementSensetivityOffset)
+            {
+                if(_lastScreenXTapPosition < SnakeController.transform.position.x)
+                    SnakeController.MovementDirection = SnakeDir.Left;
+
+                if(_lastScreenXTapPosition > SnakeController.transform.position.x)
+                    SnakeController.MovementDirection = SnakeDir.Right;
+            }
+            else
+                SnakeController.MovementDirection = SnakeDir.Center;
         }
-        else
-            SnakeController.MovementDirection = SnakeDir.Center;
     }
 }

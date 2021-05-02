@@ -37,14 +37,14 @@ namespace Assets.Scripts
             }
         }
 
-        public void AddCircle()
+        public void AddTailPart()
         {
             var circle = Instantiate(SnakeHead, _positions[_positions.Count - 1], Quaternion.identity, transform);
             _snakeCircles.Add(circle);
             _positions.Add(circle.position);
         }
 
-        public void RemoveCircle()
+        public void RemoveTailPart()
         {
             Destroy(_snakeCircles[0].gameObject);
             _snakeCircles.RemoveAt(0);
