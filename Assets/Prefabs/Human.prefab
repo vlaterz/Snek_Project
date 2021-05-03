@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FlySpeed: 1
-  FlyAcceleration: 5
+  FlyAcceleration: 20
 --- !u!114 &1221387356742009313
 MonoBehaviour:
   m_ObjectHideFlags: 0
