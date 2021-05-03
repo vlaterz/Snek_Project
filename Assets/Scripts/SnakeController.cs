@@ -16,26 +16,27 @@ namespace Assets.Scripts
         public static SnakeController GetInstance => _instance;
         private static SnakeController _instance;
 
+        public bool HasFever;
         public float Speed = 2f;
         public float TurnSpeed = 5f;
         public float RoadLeftLimit = -5f;
         public float RoadRightLimit = 5f;
         public float PickupCollectRange = 2.5f;
-        private float RoadCenter => (RoadLeftLimit + RoadRightLimit) / 2;
         public float FeverSpdModifier = 3f;
+        public float FeverTimer = 5f;
         public Color SnakeColor = Color.white;
         public SnakeDir MovementDirection = SnakeDir.Center;
-
+        private float RoadCenter => (RoadLeftLimit + RoadRightLimit) / 2;
+        private SnakeTail _componentSnakeTail;
         private ISnakeCollisionHandler _collisionHandler; //Обработчик столкновений змеи с объектами
         private void OnTriggerEnter(Collider col)
         {
-            if (_hasFever)
+            if (HasFever)
                 _collisionHandler.HandleFeverCollision(col);
             else
                 _collisionHandler.HandleCollision(col);
         }
-        private SnakeTail _componentSnakeTail;
-        private bool _hasFever;
+       
 
         void Awake()
         {
@@ -45,7 +46,6 @@ namespace Assets.Scripts
 
         private void Start()
         {
-            transform.position = GameController.GetInstance.SavedLevelData.LastCheckPointPosition;
             _componentSnakeTail = GetComponent<SnakeTail>();
             _componentSnakeTail.AddTailPart();
             _componentSnakeTail.AddTailPart();
@@ -64,7 +64,7 @@ namespace Assets.Scripts
 
         private void FixedUpdate()
         {
-            if (_hasFever)
+            if (HasFever)
                 FeverMovementHandler();
             else
                 ControlledMovementHandler();
@@ -110,17 +110,19 @@ namespace Assets.Scripts
             foreach (var renderer in renderers)
             {
                 renderer.material.EnableKeyword("_EMISSION");
-                renderer.material.SetColor("_EmissionColor", color);
+                renderer.material.SetColor("_BaseColor", color);
             }
         }
         public void StartFever() => StartCoroutine(FeverTime());
         private IEnumerator FeverTime()
         {
-            _hasFever = true;
+            HasFever = true;
             PlayerController.GetInstance.gameObject.SetActive(false);
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(FeverTimer);
             PlayerController.GetInstance.gameObject.SetActive(true);
-            _hasFever = false;
+            HasFever = false;
+            GameController.GetInstance.CurrentLevelData.CollectedDiamonds = 0;
+            GameController.GetInstance.UpdateUI();
         }
 
         /// <summary>
