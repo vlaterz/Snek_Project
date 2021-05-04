@@ -58,7 +58,7 @@ namespace Assets.Scripts
                     HandlePickUp(col);
                     break;
                 case "Human":
-                    HandleHuman(col);
+                    HandleHumanFever(col);
                     break;
             }
         }
@@ -93,6 +93,11 @@ namespace Assets.Scripts
             
             col.gameObject.SetActive(false);
             GameController.GetInstance.OnHumanEat();
+        }
+        private void HandleHumanFever(Collider col)
+        {
+            col.gameObject.SetActive(false);
+            //GameController.GetInstance.OnHumanEat();
         }
     }
 }

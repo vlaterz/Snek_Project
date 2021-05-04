@@ -11,7 +11,7 @@ namespace Assets.Scripts
 
         public SnakeController SnakeController;
         private float _lastScreenXTapPosition;
-        public float MovementSensetivityOffset = 0.1f;
+        public float MovementSensetivityOffset = 0.01f;
         void Start()
         {
             _lastScreenXTapPosition = (SnakeController.RoadLeftLimit + SnakeController.RoadRightLimit) / 2;

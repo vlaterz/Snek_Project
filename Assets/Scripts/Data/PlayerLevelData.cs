@@ -9,5 +9,12 @@ namespace Assets.Scripts.Data
     {
         public Vector3 LastCheckPointPosition;
         public int CollectedDiamonds;
+        public int HumansEaten;
+
+        public void ResetParamsToZero()
+        {
+            HumansEaten = 0;
+            CollectedDiamonds = 0;
+        }
     }
 }

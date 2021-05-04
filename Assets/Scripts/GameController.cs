@@ -22,40 +22,51 @@ namespace Assets.Scripts
             Color.yellow
         };
 
-        void Awake()
+
+        void Start()
         {
             SavedLevelData.LastCheckPointPosition = transform.position;
             if (_instance == null)
                 _instance = this;
-            else if(_instance == this)
+            else 
                 Destroy(gameObject);
             DontDestroyOnLoad(gameObject);
-        }
-
-        void Start()
-        {
             SnakeController.GetInstance.transform.position = SavedLevelData.LastCheckPointPosition;
         }
 
         public void OnDiamondPickedUp()
         {
+            
             if (SnakeController.GetInstance.HasFever) return;
             CurrentLevelData.CollectedDiamonds += 1;
-            if(CurrentLevelData.CollectedDiamonds % 3 == 0)
+            if (CurrentLevelData.CollectedDiamonds % 3 == 0)
+            {
                 SnakeController.GetInstance.StartFever();
+                CurrentLevelData.CollectedDiamonds = 0;
+            }
             UpdateUI();
+            Debug.Log($"DiamondPICKUP: {CurrentLevelData.CollectedDiamonds}");
         }
 
         public void OnHumanEat()
         {
-            //Debug.Log("Human was eaten");
+            CurrentLevelData.HumansEaten += 1;
+            if(CurrentLevelData.HumansEaten % 6 == 0)
+                SnakeController.GetInstance.ComponentSnakeTail.AddTailPart();
         }
 
-        public void UpdateUI()=> ScoreTextRef.SetText(CurrentLevelData.CollectedDiamonds.ToString());
+        public void UpdateUI()
+        {
+            if (ScoreTextRef == null)
+                ScoreTextRef = GameObject.FindGameObjectWithTag("UI_DiamondsCounter").GetComponent<TextMeshProUGUI>();
+            ScoreTextRef.SetText(CurrentLevelData.CollectedDiamonds.ToString());
+        } 
         public void SavePlayerLevelData() => SavedLevelData = CurrentLevelData;
         public void LoadPlayerGame()
         {
             //CurrentLevelData = SavedLevelData;
+            CurrentLevelData.ResetParamsToZero();
+            UpdateUI();
             SceneManager.LoadScene("GameScene");
         }
     }
